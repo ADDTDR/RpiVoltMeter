@@ -1,2 +1,2 @@
 # RpiVoltMeter
-RPI MCU Volt Meter 
+Raspberry Pi-based voltmeter assembled from scrap parts.
