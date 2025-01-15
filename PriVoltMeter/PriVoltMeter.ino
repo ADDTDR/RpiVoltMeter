@@ -12,7 +12,7 @@
 LedDisplay hcms29xx = LedDisplay(dataPin, registerSelect, clockPin,
                                   enable, reset, displayLength);
 
-const float referenceVoltage = 3.33;
+const float referenceVoltage = 3.22;
 const int adcResolution = 4096;
 
 void setup() {
@@ -23,18 +23,21 @@ void setup() {
 
   Serial.begin(9600);
 }
-
+// Exponential moving average filter 
+float smoothedValue = 0.0;
+float alpha = 0.07;  // Smoothing factor (0 < alpha <= 1)
 
 void loop() {
   int sensorValue = analogRead(A0);
-  float voltage = (sensorValue / (float)adcResolution) * referenceVoltage;
+  smoothedValue = alpha * sensorValue + (1 - alpha) * smoothedValue; 
+  float voltage = (smoothedValue / (float)adcResolution) * referenceVoltage;
 
 
-  Serial.print("Voltage: ");
-  Serial.print(voltage, 3); // Print voltage with 2 decimal places
-  Serial.println(" V");
+  // Serial.print("Voltage: ");
+  // Serial.print(voltage, 3); // Print voltage with 2 decimal places
+  // Serial.println(" V");
   hcms29xx.home();
   hcms29xx.print(voltage, DEC);
 
-  delay(250);  // delay in between reads for stability
+  delay(200);  // delay in between reads for stability
 }
